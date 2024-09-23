@@ -1,11 +1,10 @@
-import java.util.Random;
 import java.util.Scanner;
 
 import game.Connect4;
 import game.Player;
 import utils.GameState;
-import utils.Message;
 import utils.Response;
+import utils.Code;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -45,46 +44,54 @@ public class App {
 
         Connect4 game = new Connect4(mode, player1, player2);
         GameState gameState = game.getGameState().getData();
+        game.startGame();
         printBoard(gameState.getBoard());
 
-        while (!game.getWinningInfo().getMsg().equals(Message.GAME_OVER)) {
+        System.out.println(game.getWinningInfo().getStatusCode());
+
+        while (game.getWinningInfo().getStatusCode() == Code.CONT_GAME) {
 
             Player currentPlayer = gameState.getCurrentPlayer();
-            int column;
+            int column = 0;
 
             if (currentPlayer.isComputer()) {
                 System.out.println("Computer is thinking...");
-                column = new Random().nextInt(7);
-                System.out.println(currentPlayer.getPlayerName() + " chooses column " + column);
+                // sleep for 1 second
+                Thread.sleep(1000);
             } else {
                 System.out.println(currentPlayer.getPlayerName() + ", please choose a column (0-6): ");
+                // Check if the input is an integer
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Please enter a valid integer.");
+                    scanner.next();
+                }
                 column = scanner.nextInt();
             }
 
             Response<GameState> response = game.dropChecker(column);
-            gameState = response.getData();
 
             if (response.getStatusCode() != 200) {
-                if (response.getMsg().equals(Message.COLUMN_FULL)) {
+                if (response.getStatusCode() == Code.FULL_COL_ERR) {
                     System.out.println("Column " + column + " is full. Please choose another column.");
                     continue;
                 }
-                if (response.getMsg().equals(Message.INVALID_MOVE)) {
+                if (response.getStatusCode() == Code.INVALID_MOVE_ERR) {
                     System.out.println("Invalid move. Please choose a column between 0 and 6.");
                     continue;
                 }
             }
 
+            gameState = response.getData();
             printBoard(gameState.getBoard());
         }
 
-        String gameOverMsg = game.getWinningInfo().getMsg();
+        Response<Player> gameStatus = game.getWinningInfo();
         System.out.println("Game over!");
-        if (gameOverMsg.equals(Message.DRAW_INFO)) {
+        if (gameStatus.getStatusCode() == Code.DRAW_GAME) {
             System.out.println("It's a draw!");
-        } else if (gameOverMsg.equals(Message.P1_WIN_INFO)) {
+        } else if (gameStatus.getStatusCode() == Code.P1_WIN) {
             System.out.println(player1.getPlayerName() + " wins!");
-        } else if (gameOverMsg.equals(Message.P2_WIN_INFO)) {
+        } else if (gameStatus.getStatusCode() == Code.P2_WIN) {
             System.out.println(player2.getPlayerName() + " wins!");
         }
 
