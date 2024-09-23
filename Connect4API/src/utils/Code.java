@@ -3,10 +3,6 @@ package utils;
 public class Code {
 
     // Successful Code
-    public enum GameState{
-        START_GAME,
-
-    }
     public static final int START_GAME=200;
     public static final int SET_NAME=201;
     public static final int DROP_PIECE=202;
@@ -14,6 +10,7 @@ public class Code {
     public static final int P2_WIN=204;
     public static final int DRAW_GAME=205;
     public static final int CONT_GAME=206;
+    public static final int GET_GAME_STATUS_SUC=207;
 
     // Error Code
     public static final int START_GAME_ERR=300;

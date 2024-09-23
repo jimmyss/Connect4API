@@ -51,6 +51,12 @@ public class Connect4 {
         updatePlayers(this.mode);
     }
 
+    /**
+     * Initializes a Connect4 game with two given players
+     *
+     * @param player1 The instance of the first player
+     * @param player2 The instance of the second player
+     */
     public Connect4(Player player1, Player player2) {
         this.board = new char[6][7];
         this.lastDrop=new int[2];
@@ -62,6 +68,13 @@ public class Connect4 {
         this.currentPlayer = player1;
     }
 
+    /**
+     * Initializes a Connect4 game
+     * @param mode game mode 1, 2, or 3
+     * @param player1
+     * @param player2
+     * @throws GameException
+     */
     public Connect4(int mode, Player player1, Player player2) throws GameException {
         this.mode = mode;
         this.board=new char[6][7];
@@ -276,7 +289,7 @@ public class Connect4 {
     }
 
     public Response<GameState> getGameState(){
-        return Response.success(new GameState(board, currentPlayer));
+        return Response.success(Code.GET_GAME_STATUS_SUC, new GameState(board, currentPlayer));
     }
 
     /**
