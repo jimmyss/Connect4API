@@ -41,8 +41,8 @@ public class Response<T>{
     }
 
     /**** Static Method ****/
-    public static <T> Response<T> success(T data){
-        return new Response<>(200, "Success", data);
+    public static <T> Response<T> success(int code, T data){
+        return new Response<>(code, "Success", data);
     }
 
     public static <T> Response<T> error(int statusCode, String msg){
