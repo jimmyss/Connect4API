@@ -2,18 +2,18 @@ package utils;
 
 public class Response<T>{
     private int statusCode;
-    private String msg;
+    private String info;
     private T data;
 
     public Response(int statusCode, String info, T data) {
         this.statusCode = statusCode;
-        this.msg = info;
+        this.info = info;
         this.data = data;
     }
 
-    public Response(int statusCode, String msg) {
+    public Response(int statusCode, String info) {
         this.statusCode = statusCode;
-        this.msg = msg;
+        this.info = info;
     }
 
     public int getStatusCode() {
@@ -24,12 +24,12 @@ public class Response<T>{
         this.statusCode = statusCode;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getInfo() {
+        return info;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public T getData() {
@@ -45,7 +45,7 @@ public class Response<T>{
         return new Response<>(200, "Success", data);
     }
 
-    public static <T> Response<T> error(int statusCode, String msg){
-        return new Response<>(statusCode, msg);
+    public static <T> Response<T> error(int statusCode, String info){
+        return new Response<>(statusCode, info);
     }
 }

@@ -265,8 +265,8 @@ public class Connect4 {
         }
     }
 
-    public GameState getGameState() {
-        return new GameState(board, currentPlayer);
+    public Response<GameState> getGameState(){
+        return Response.success(new GameState(board, currentPlayer));
     }
 
     /**

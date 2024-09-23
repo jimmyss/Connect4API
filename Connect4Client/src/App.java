@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 import game.Connect4;
 import game.Player;
+import utils.GameState;
 import utils.Message;
 import utils.Response;
 
@@ -43,11 +44,12 @@ public class App {
         }
 
         Connect4 game = new Connect4(mode, player1, player2);
+        GameState gameState = game.getGameState().getData();
+        printBoard(gameState.getBoard());
 
-        while (game.getWinningInfo().getMsg().equals(Message.GAME_CONTINUE)) {
-            printBoard(game.getGameState().getBoard());
+        while (!game.getWinningInfo().getMsg().equals(Message.GAME_OVER)) {
 
-            Player currentPlayer = game.getGameState().getCurrentPlayer();
+            Player currentPlayer = gameState.getCurrentPlayer();
             int column;
 
             if (currentPlayer.isComputer()) {
@@ -59,7 +61,8 @@ public class App {
                 column = scanner.nextInt();
             }
 
-            Response response = game.dropChecker(column);
+            Response<GameState> response = game.dropChecker(column);
+            gameState = response.getData();
 
             if (response.getStatusCode() != 200) {
                 if (response.getMsg().equals(Message.COLUMN_FULL)) {
@@ -71,7 +74,21 @@ public class App {
                     continue;
                 }
             }
+
+            printBoard(gameState.getBoard());
         }
+
+        String gameOverMsg = game.getWinningInfo().getMsg();
+        System.out.println("Game over!");
+        if (gameOverMsg.equals(Message.DRAW_INFO)) {
+            System.out.println("It's a draw!");
+        } else if (gameOverMsg.equals(Message.P1_WIN_INFO)) {
+            System.out.println(player1.getPlayerName() + " wins!");
+        } else if (gameOverMsg.equals(Message.P2_WIN_INFO)) {
+            System.out.println(player2.getPlayerName() + " wins!");
+        }
+
+        scanner.close();
     }
 
     private static void printBoard(char[][] board) {
