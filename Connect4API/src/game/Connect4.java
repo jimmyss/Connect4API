@@ -203,10 +203,6 @@ public class Connect4 {
         }
     }
 
-    public char[][] getBoard() {
-        return board;
-    }
-
     /**
      * Allow changing of human player's name
      *
@@ -224,7 +220,7 @@ public class Connect4 {
      *
      * @param column
      */
-    public Response<GameState> dropPiece(int column) throws GameException {
+    public Response<GameState> dropChecker(int column) throws GameException {
         // judge if the column is valid
         if(column<0 || column>6) {
             return Response.error(302, Message.INVALID_MOVE);
@@ -267,6 +263,10 @@ public class Connect4 {
         }else{
             return Response.success(Message.GAME_CONTINUE);
         }
+    }
+
+    public GameState getGameState() {
+        return new GameState(board, currentPlayer);
     }
 
     /**

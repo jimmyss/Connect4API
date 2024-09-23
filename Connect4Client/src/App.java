@@ -1,8 +1,10 @@
+import java.util.Random;
 import java.util.Scanner;
 
 import game.Connect4;
 import game.Player;
-
+import utils.Message;
+import utils.Response;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -42,9 +44,33 @@ public class App {
 
         Connect4 game = new Connect4(mode, player1, player2);
 
-        while (!game.isFinished()) {
-            printBoard(game.getBoard());
-            
+        while (game.getWinningInfo().getMsg().equals(Message.GAME_CONTINUE)) {
+            printBoard(game.getGameState().getBoard());
+
+            Player currentPlayer = game.getGameState().getCurrentPlayer();
+            int column;
+
+            if (currentPlayer.isComputer()) {
+                System.out.println("Computer is thinking...");
+                column = new Random().nextInt(7);
+                System.out.println(currentPlayer.getPlayerName() + " chooses column " + column);
+            } else {
+                System.out.println(currentPlayer.getPlayerName() + ", please choose a column (0-6): ");
+                column = scanner.nextInt();
+            }
+
+            Response response = game.dropChecker(column);
+
+            if (response.getStatusCode() != 200) {
+                if (response.getMsg().equals(Message.COLUMN_FULL)) {
+                    System.out.println("Column " + column + " is full. Please choose another column.");
+                    continue;
+                }
+                if (response.getMsg().equals(Message.INVALID_MOVE)) {
+                    System.out.println("Invalid move. Please choose a column between 0 and 6.");
+                    continue;
+                }
+            }
         }
     }
 
