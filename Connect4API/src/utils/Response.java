@@ -2,18 +2,15 @@ package utils;
 
 public class Response<T>{
     private int statusCode;
-    private String info;
     private T data;
 
-    public Response(int statusCode, String info, T data) {
+    public Response(int statusCode, T data) {
         this.statusCode = statusCode;
-        this.info = info;
         this.data = data;
     }
 
-    public Response(int statusCode, String info) {
+    public Response(int statusCode) {
         this.statusCode = statusCode;
-        this.info = info;
     }
 
     public int getStatusCode() {
@@ -22,14 +19,6 @@ public class Response<T>{
 
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
     }
 
     public T getData() {
@@ -42,10 +31,10 @@ public class Response<T>{
 
     /**** Static Method ****/
     public static <T> Response<T> success(int code, T data){
-        return new Response<>(code, "Success", data);
+        return new Response<>(code, data);
     }
 
-    public static <T> Response<T> error(int statusCode, String info){
-        return new Response<>(statusCode, info);
+    public static <T> Response<T> error(int statusCode){
+        return new Response<>(statusCode);
     }
 }

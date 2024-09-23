@@ -2,7 +2,6 @@ package game;
 
 import utils.Code;
 import utils.GameState;
-import utils.Message;
 import utils.Response;
 
 import java.util.Random;
@@ -69,11 +68,12 @@ public class Connect4 {
     }
 
     /**
-     * Initializes a Connect4 game
+     * Initializes a Connect4 game with given game mode and two players
+     *
      * @param mode game mode 1, 2, or 3
-     * @param player1
-     * @param player2
-     * @throws GameException
+     * @param player1 The instance of the first player
+     * @param player2 The instance of the second player
+     * @throws GameException if the game mode is invalid
      */
     public Connect4(int mode, Player player1, Player player2) throws GameException {
         this.mode = mode;
@@ -92,6 +92,12 @@ public class Connect4 {
     /**** Private Methods ****/
     /*************************/
 
+    /**
+     * Updates players' type based on game mode
+     *
+     * @param mode The game mode
+     * @throws GameException if the game mode is invalid
+     */
     private void updatePlayers(int mode) throws GameException {
         if(mode==1){ // user vs user
             player1.setComputer(false);
@@ -102,9 +108,14 @@ public class Connect4 {
         }else if (mode==3){ // com vs com
             player1.setComputer(true);
             player2.setComputer(true);
-        } else throw new GameException(Message.GAME_NOT_INIT);
+        } else throw new GameException("Game not init");
     }
 
+    /**
+     * Updates the game board after a piece is dropped in specific column
+     * @param col The column
+     * @throws GameException
+     */
     private void updateBoard(int col) throws GameException {
         if(!isFullCol(col)){ // if the column is not full
             char curColor=currentPlayer.getColor();
@@ -202,7 +213,7 @@ public class Connect4 {
     }
 
     private boolean isFullCol(int column) throws GameException {
-        if(column<0 || column>6) throw new GameException(Message.INVALID_MOVE);
+        if(column<0 || column>6) throw new GameException("Invalid move");
         if(this.board[0][column]=='\0'){
             return false;
         }else return true;
@@ -220,10 +231,10 @@ public class Connect4 {
     public Response<GameState> startGame(){
         if(mode!=-1){
             // This game has not initialize yet
-            return Response.error(Code.START_GAME_ERR, Message.GAME_NOT_INIT);
+            return Response.error(Code.START_GAME_ERR);
         }else{
             GameState state=new GameState(board, currentPlayer);
-            return Response.success(Code.START_GAME,state);
+            return Response.success(Code.START_GAME, state);
         }
     }
 
@@ -247,12 +258,12 @@ public class Connect4 {
     public Response<GameState> dropChecker(int column) throws GameException {
         // judge if the column is valid
         if(column<0 || column>6) {
-            return Response.error(Code.INVALID_MOVE_ERR, Message.INVALID_MOVE);
+            return Response.error(Code.INVALID_MOVE_ERR);
         }else if(isFullCol(column)){
-            return Response.error(Code.FULL_COL_ERR, Message.COLUMN_FULL);
+            return Response.error(Code.FULL_COL_ERR);
         }
         // judge if the game is over
-        if(isFinished) return Response.error(Code.GAME_FIN_ERR, Message.GAME_OVER);
+        if(isFinished) return Response.error(Code.GAME_FIN_ERR);
 
         // drop piece according to current player
         if(currentPlayer.isComputer()){
@@ -273,18 +284,18 @@ public class Connect4 {
      *
      * @return
      */
-    public Response<String> getWinningInfo() {
+    public Response<Player> getWinningInfo() {
         if(isFinished){
             if(isWon()){
                 if(currentPlayer==player1)
-                    return Response.success(Code.P1_WIN, Message.P1_WIN_INFO);
+                    return Response.success(Code.P1_WIN, player1);
                 else
-                    return Response.success(Code.P2_WIN, Message.P2_WIN_INFO);
+                    return Response.success(Code.P2_WIN, player2);
             }
             else
-                return Response.success(Code.DRAW_GAME, Message.DRAW_INFO);
+                return Response.success(Code.DRAW_GAME, null);
         }else{
-            return Response.success(Code.CONT_GAME, Message.GAME_CONTINUE);
+            return Response.success(Code.CONT_GAME, null);
         }
     }
 
