@@ -1,5 +1,6 @@
 package game;
 
+import utils.Code;
 import utils.GameState;
 import utils.Message;
 import utils.Response;
@@ -196,10 +197,10 @@ public class Connect4 {
     public Response<GameState> startGame(){
         if(mode!=-1){
             // This game has not initialize yet
-            return Response.error(301, Message.GAME_NOT_INIT);
+            return Response.error(Code.START_GAME_ERR, Message.GAME_NOT_INIT);
         }else{
             GameState state=new GameState(board, currentPlayer);
-            return Response.success(state);
+            return Response.success(Code.START_GAME,state);
         }
     }
 
@@ -212,7 +213,7 @@ public class Connect4 {
      */
     public Response<String> setPlayerName(Player player, String name){
         player.setPlayerName(name);
-        return Response.success("new name:"+name);
+        return Response.success(Code.SET_NAME,"new name:"+name);
     }
 
     /**
@@ -223,12 +224,12 @@ public class Connect4 {
     public Response<GameState> dropChecker(int column) throws GameException {
         // judge if the column is valid
         if(column<0 || column>6) {
-            return Response.error(302, Message.INVALID_MOVE);
+            return Response.error(Code.INVALID_MOVE_ERR, Message.INVALID_MOVE);
         }else if(isFullCol(column)){
-            return Response.error(303, Message.COLUMN_FULL);
+            return Response.error(Code.FULL_COL_ERR, Message.COLUMN_FULL);
         }
         // judge if the game is over
-        if(isFinished) return Response.error(304, Message.GAME_OVER);
+        if(isFinished) return Response.error(Code.GAME_FIN_ERR, Message.GAME_OVER);
 
         // drop piece according to current player
         if(currentPlayer.isComputer()){
@@ -241,7 +242,7 @@ public class Connect4 {
         judgeGame();
         if(!isFinished) updateCurPlayer();
         GameState state=new GameState(board, currentPlayer);
-        return Response.success(state);
+        return Response.success(Code.DROP_PIECE, state);
     }
 
     /**
@@ -252,16 +253,15 @@ public class Connect4 {
     public Response<String> getWinningInfo() {
         if(isFinished){
             if(isWon()){
-                return Response.success(
-                        currentPlayer==player1 ?
-                                (Message.P1_WIN_INFO):(Message.P2_WIN_INFO)
-                );
+                if(currentPlayer==player1)
+                    return Response.success(Code.P1_WIN, Message.P1_WIN_INFO);
+                else
+                    return Response.success(Code.P2_WIN, Message.P2_WIN_INFO);
             }
-            else{
-                return Response.success(Message.DRAW_INFO);
-            }
+            else
+                return Response.success(Code.DRAW_GAME, Message.DRAW_INFO);
         }else{
-            return Response.success(Message.GAME_CONTINUE);
+            return Response.success(Code.CONT_GAME, Message.GAME_CONTINUE);
         }
     }
 
@@ -282,7 +282,7 @@ public class Connect4 {
             this.player1=new Player();
             this.player2=new Player();
             this.currentPlayer=player1;
-            return Response.success(true);
+            return Response.success(Code.START_GAME, true);
         }catch (Exception e){
             throw e;
         }
