@@ -9,9 +9,17 @@ import java.util.Random;
 
 import exceptions.GameException;
 
+/**
+ * Connect4 class represents the logic for the Connect4 game. It manages the game state, players,
+ * and interactions such as placing pieces, checking if the game is won or drawn, and switching
+ * between players.
+ */
 public class Connect4 {
+    // Constants for the game piece colors
     public static final char RED='@';
     public static final char BLUE='#';
+
+    // Game related attributes
     private int mode=-1;
     private char[][] board;
     private Player player1;
@@ -21,12 +29,14 @@ public class Connect4 {
     private boolean isFinished;
 
     /**** Constructors ****/
+
     /**
-     * This constructor takes in the game mode and initialize a new game
+     * Initializes a new Connect4 game with the given mode.
      *
      * @param mode  1. mode==1 human vs human
      *              2. mode==2 human vs computer
      *              3. mode==3 computer vs computer
+     * @throws GameException if the game mode is invalid
      */
     public Connect4(int mode) throws GameException {
         this.mode=mode;
