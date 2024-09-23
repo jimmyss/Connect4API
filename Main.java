@@ -1,16 +1,7 @@
 
 
 public class Main {
-    int mode = Scanner
-    switch mode
-        case 1:
-            Player player1 = new Player();
-            Player player2 = new Player();
-        case 2:
-            Player player1 = new Player();
-            Player player2 = new Player();
-        case 3:
-            
-    Connect4 game = new Connect4(player1, player2);
-    while game.isEnd()
+    public static void main(String[] args) {
+        System.out.println("Welcome to use Connect 4 client v1.0!");
+    }
 }
