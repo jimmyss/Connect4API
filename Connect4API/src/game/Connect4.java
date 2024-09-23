@@ -1,11 +1,12 @@
 package game;
 
-import exceptions.GameException;
 import utils.GameState;
 import utils.Message;
 import utils.Response;
 
 import java.util.Random;
+
+import exceptions.GameException;
 
 public class Connect4 {
     public static final char RED='@';
@@ -200,6 +201,10 @@ public class Connect4 {
             GameState state=new GameState(board, currentPlayer);
             return Response.success(state);
         }
+    }
+
+    public char[][] getBoard() {
+        return board;
     }
 
     /**

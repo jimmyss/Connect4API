@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/Users/bohanliu/Documents/17780/hw/hw3/Connect4API/Connect4API/Connect4API.jar"
+    ]
+}
