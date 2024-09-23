@@ -14,6 +14,9 @@ import exceptions.GameException;
  * between players.
  */
 public class Connect4 {
+    // Constants for the board size
+    private static final int ROWS=6;
+    private static final int COLS=7;
     // Constants for the game piece colors
     public static final char RED='@';
     public static final char BLUE='#';
@@ -119,13 +122,22 @@ public class Connect4 {
     private void updateBoard(int col) throws GameException {
         if(!isFullCol(col)){ // if the column is not full
             char curColor=currentPlayer.getColor();
-            for(int row=0; row<5; row++){
-                if(board[row][col]!='\0') {
+            for (int row = ROWS-1; row >= 0; row--) {
+                if (board[row][col] == '\u0000') {
                     board[row][col] = curColor;
-                    lastDrop[0]=row;
-                    lastDrop[1]=col;
+                    lastDrop[0] = row;
+                    lastDrop[1] = col;
+                    break;
                 }
             }
+            // for(int row=; row<5; row++){
+            //     if(board[row][col] =='\u0000') {
+            //         board[row][col] = curColor;
+            //         lastDrop[0]=row;
+            //         lastDrop[1]=col;
+            //         break;
+            //     }
+            // }
         }
     }
 
@@ -140,7 +152,8 @@ public class Connect4 {
         int curCol=lastDrop[1];
         // check horizontal direction
         int startCol=Math.max(curCol-3, 0);
-        for(int col=startCol; col<=curCol; col++){
+        int endCol=Math.min(curCol+3, COLS - 1);
+        for(int col=startCol; col<=endCol - 3; col++){
             if(board[curRow][col]==curColor &&
                board[curRow][col+1]==curColor &&
                board[curRow][col+2]==curColor &&
@@ -151,7 +164,8 @@ public class Connect4 {
 
         // check vertical direction
         int startRow=Math.max(curRow-3, 0);
-        for(int row=startRow; row<=curRow; row++){
+        int endRow = Math.min(curRow + 3, ROWS - 1);
+        for(int row = startRow; row <= endRow - 3; row++){
             if(board[row][curCol]==curColor &&
                board[row+1][curCol]==curColor &&
                board[row+2][curCol]==curColor &&
@@ -161,37 +175,45 @@ public class Connect4 {
         }
 
         // check up-left to down-right direction
-        for(int i=-3; i<=0; i++){
-            int row=curRow+i;
-            int col=curCol+i;
-            if (row >= 0 && row + 3 <= 5 && col >= 0 && col + 3 <= 6) {
-                if (board[row][col] == curColor &&
-                        board[row + 1][col + 1] == curColor &&
-                        board[row + 2][col + 2] == curColor &&
-                        board[row + 3][col + 3] == curColor) {
+        startRow = curRow + Math.min(3, ROWS - 1 - curRow);
+        startCol = curCol + Math.min(3, COLS - 1 - curCol);
+        int count = 0;
+        while (startRow >= 0 && startCol >= 0) {
+            if (board[startRow][startCol] == curColor) {
+                count++;
+                if (count == 4) {
                     return true;
                 }
+            } else {
+                count = 0;
             }
+            startRow--;
+            startCol--;
         }
 
         // check up-right to down-left direction
-        for (int i = -3; i <= 0; i++) {
-            int row = curRow + i;
-            int col = curCol - i;
-            if (row >= 0 && row + 3 <= 5 && col >= 0 && col <= 6) {
-                if (board[row][col] == curColor &&
-                        board[row + 1][col - 1] == curColor &&
-                        board[row + 2][col - 2] == curColor &&
-                        board[row + 3][col - 3] == curColor) {
+        startRow = curRow + Math.min(3, ROWS - 1 - curRow);
+        startCol = curCol - Math.min(3, curCol);
+        count = 0;
+        while (startRow >= 0 && startCol < COLS) {
+            if (board[startRow][startCol] == curColor) {
+                count++;
+                if (count == 4) {
                     return true;
                 }
+            } else {
+                count = 0;
             }
+            startRow--;
+            startCol++;
         }
 
-        return true;
+        return false;
     }
 
     private boolean isDraw() {
+        // check if there is a winner
+        if(isWon()) return false;
         // check if the board is full
         for(int row=0; row<6; row++){
             for(int col=0; col<7; col++){
@@ -199,11 +221,6 @@ public class Connect4 {
                     return false;
                 }
             }
-        }
-
-        // check if current player win the game
-        if (!isWon()) {
-            return true;
         }
         return false;
     }
@@ -267,7 +284,7 @@ public class Connect4 {
 
         // drop piece according to current player
         if(currentPlayer.isComputer()){
-            Random random=new Random(222);
+            Random random=new Random();
             int randomNum=random.nextInt(7);
             updateBoard(randomNum);
         }else{
