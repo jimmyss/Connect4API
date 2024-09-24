@@ -26,7 +26,13 @@ public class Connect4 {
     private static final int ROWS=6;
     private static final int COLS=7;
     // Constants for the game piece colors
+    /**
+     * '@' is represented as RED
+     */
     public static final char RED='@';
+    /**
+     * '#' is represented as BLUE
+     */
     public static final char BLUE='#';
 
     // Game related attributes
