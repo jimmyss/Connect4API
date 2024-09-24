@@ -275,9 +275,36 @@ public class Connect4 {
     /************************/
 
     /**
-     * Returns current game state and status code information.
+     * Starts the game by returning the current game state and status code information.
      *
-     * @return A {@code Response} object containing current game state and code
+     * This function is called to initiate the game after it has been properly set up. 
+     * It checks whether the game is already initialized and ready to start. If the game has not been 
+     * initialized correctly (i.e., the mode is not set), an error is returned. Otherwise, it returns 
+     * the current state of the game including the board and the current player.
+     *
+     * @return A {@code Response<GameState>} object that contains the current game state and status code.
+     *         Possible responses include:
+     *         - {@code Response.success(Code.START_GAME, GameState)}: The game is successfully started, 
+     *           and the current game state is returned.
+     *         - {@code Response.error(Code.START_GAME_ERR)}: The game has not been properly initialized (the mode is not set).
+     *
+     * ### Game State Modifications:
+     * - **No modifications**: This function does not modify any internal state of the game. 
+     *   It only returns the current state if the game is properly initialized.
+     *
+     * ### Detailed Behavior:
+     * 1. **Game Initialization Check**:
+     *    - The function checks whether the `mode` is valid. If `mode == -1`, it indicates that the game is not initialized properly.
+     *    - If the game is not initialized (i.e., `mode == -1`), a `Code.START_GAME_ERR` error response is returned.
+     *
+     * 2. **Returning Game State**:
+     *    - If the game has been initialized (i.e., `mode != -1`), the function constructs a `GameState` object containing the current board and the current player.
+     *    - The function then returns a `Response.success()` with the `Code.START_GAME` status and the current `GameState`.
+     *
+     * ### Related Class Members:
+     * - **mode**: This integer field indicates the current game mode. If it is `-1`, the game is considered uninitialized. 
+     * - **board**: The current state of the game board, which is part of the returned `GameState` if the game is properly initialized.
+     * - **currentPlayer**: The player who is currently taking a turn, which is also part of the returned `GameState`.
      */
     public Response<GameState> startGame(){
         if(mode!=-1){
@@ -302,11 +329,51 @@ public class Connect4 {
     }
 
     /**
-     * Drops a checker piece in the specific column and returns the updated game state.
+     * Drops a checker piece in the specified column and returns the updated game state.
      *
-     * @param column The column where the piece should be dropped
-     * @return A {@code Response} object containing updated board and player information
-     * @throws GameException if the move is invalid
+     * The function handles both human and computer players, validating the input column
+     * and managing the game flow. If the game is finished or if the column is invalid or full, 
+     * an error response is returned. If the move is valid, the board is updated, and the function 
+     * checks whether the game has been won, drawn, or should continue.
+     *
+     * @param column The column where the human player intends to drop their piece.
+     *               For computer players, a random valid column will be selected.
+     * @return A {@code Response} object that contains the game state (including the board and current player information) 
+     *         and any relevant status codes.
+     *         Possible responses include:
+     *         - {@code Response.success(Code.DROP_PIECE, GameState)}: The piece was successfully dropped.
+     *         - {@code Response.error(Code.INVALID_MOVE_ERR)}: The specified column is out of bounds (not between 0 and 6).
+     *         - {@code Response.error(Code.FULL_COL_ERR)}: The specified column is already full.
+     *         - {@code Response.error(Code.GAME_FIN_ERR)}: The game is already finished and no more moves are allowed.
+     *
+     * @throws GameException if any unexpected issue occurs during the move.
+     *
+     * ### Game State Modifications:
+     * - **Game board (`board`)**: The function modifies the 6x7 game board by placing a checker piece in the specified column (or a random column for the computer).
+     * - **Current player (`currentPlayer`)**: If the move is successful, the function will update the current player to the next one unless the game is finished.
+     * - **Last dropped position (`lastDrop`)**: This array is updated to store the row and column where the latest piece was dropped.
+     * - **Game finished flag (`isFinished`)**: This boolean flag is updated to `true` if the move results in a win or draw.
+     *
+     * ### Detailed Behavior:
+     * 1. **Column Validation**:
+     *    - If the column is outside the valid range (0 to 6), a `Code.INVALID_MOVE_ERR` is returned.
+     *    - If the column is full (all rows in that column are occupied), a `Code.FULL_COL_ERR` is returned.
+     *  
+     * 2. **Game Finished Check**:
+     *    - If the game has already finished (`isFinished == true`), a `Code.GAME_FIN_ERR` is returned, and no moves are allowed.
+     *  
+     * 3. **Piece Dropping**:
+     *    - For a human player: The function attempts to drop the checker in the specified `column` if it passes validation.
+     *    - For a computer player: The function randomly selects a valid column between 0 and 6 using `Random.nextInt(7)`.
+     *    - After a piece is successfully dropped, the function updates the game board by calling `updateBoard()`, which modifies the `board` array and the `lastDrop[]` array.
+     *  
+     * 4. **Game Status Update**:
+     *    - The function then calls `judgeGame()` to check if the move results in a win, draw, or if the game should continue.
+     *    - If the game is not finished after the move, the function updates the `currentPlayer` to the next player by calling `updateCurPlayer()`.
+     *  
+     * 5. **Returning Game State**:
+     *    - If the move is valid and the game is not finished, a successful `Response` with `Code.DROP_PIECE` and the updated `GameState` (including the current board and player information) is returned.
+     *  
      */
     public Response<GameState> dropChecker(int column) throws GameException {
         // judge if the column is valid
@@ -333,9 +400,37 @@ public class Connect4 {
     }
 
     /**
-     * Returns information about current game state, including if there is a winner
+     * Returns information about the current game state, including whether there is a winner or if the game is still ongoing.
      *
-     * @return A {@code Response} object containing status code and current winner(if the game has a winner)
+     * This function checks the game’s current status to determine if there is a winner, a draw, or if the game is still in progress.
+     * If the game is finished, it returns the winner (if any) or indicates a draw. If the game is ongoing, it returns the appropriate status code without a winner.
+     *
+     * @return A {@code Response<Player>} object containing:
+     *         - {@code Response.success(Code.P1_WIN, player1)}: If player 1 (RED) has won the game.
+     *         - {@code Response.success(Code.P2_WIN, player2)}: If player 2 (BLUE) has won the game.
+     *         - {@code Response.success(Code.DRAW_GAME, null)}: If the game has ended in a draw.
+     *         - {@code Response.success(Code.CONT_GAME, null)}: If the game is still ongoing with no winner yet.
+     *
+     * ### Game State Modifications:
+     * - **No modifications**: This function only checks the current state of the game and returns the appropriate response. 
+     *   It does not alter the game’s internal state.
+     *
+     * ### Detailed Behavior:
+     * 1. **Game Finished Check**:
+     *    - The function first checks the `isFinished` flag to determine if the game has concluded.
+     *    - If `isFinished == true`, it proceeds to check whether there is a winner.
+     *
+     * 2. **Winner Determination**:
+     *    - If the game has been won (`isWon()` returns `true`), the function determines the winner based on the `currentPlayer`.
+     *      - If `currentPlayer` is `player1` (RED), it returns a success response with `Code.P1_WIN` and `player1` as the winner.
+     *      - If `currentPlayer` is `player2` (BLUE), it returns a success response with `Code.P2_WIN` and `player2` as the winner.
+     *
+     * 3. **Draw Check**:
+     *    - If the game is finished but there is no winner (`isWon()` returns `false`), the function returns `Response.success(Code.DRAW_GAME, null)` to indicate that the game ended in a draw.
+     *
+     * 4. **Game Ongoing**:
+     *    - If the game is still in progress (`isFinished == false`), the function returns `Response.success(Code.CONT_GAME, null)` to indicate that the game is ongoing and no winner has been determined yet.
+     *
      */
     public Response<Player> getWinningInfo() {
         if(isFinished){
@@ -362,9 +457,12 @@ public class Connect4 {
     }
 
     /**
-     * Resets current game to its initial state
+     * Resets the current game to its initial state.
      *
-     * @return A {@code Response} object indicating success or failure
+     * This method clears the board, resets players, and reinitializes the game to its starting state.
+     * For details on the initial state, refer to the {@code startGame()} documentation.
+     *
+     * @return A {@code Response<Boolean>} object indicating success (with {@code true}) or failure (with {@code false}).
      */
     public Response<Boolean> resetGame() {
         try{
