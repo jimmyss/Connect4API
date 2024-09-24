@@ -19,7 +19,7 @@ This repository contains two separate projects: **Connect4API** and **Connect4Cl
     Contains the source code for the Connect4 game client.
 
 - **docs/**
-Contains the documentation of the API. You can find detailed explanations of each API function, their parameters, and expected behavior.
+    Contains the documentation of the API. You can find detailed explanations of each API function, their parameters, and expected behavior.
 
 ## How to Run
 
