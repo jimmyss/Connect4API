@@ -12,6 +12,14 @@ import exceptions.GameException;
  * Connect4 class represents the logic for the Connect4 game. It manages the game state, players,
  * and interactions such as placing pieces, checking if the game is won or drawn, and switching
  * between players.
+ *
+ * <p>This class handles different modes of play including human vs human, human vs computer, and
+ * computer vs computer. It also manages the game board, handles player actions, and determines the
+ * game outcome.</p>
+ *
+ * @author Shimao Du, Bohan Liu
+ * @version 1.0
+ * @since 2024-09-23
  */
 public class Connect4 {
     // Constants for the board size
@@ -35,9 +43,12 @@ public class Connect4 {
     /**
      * Initializes a new Connect4 game with the given mode.
      *
-     * @param mode  1. mode==1 human vs human
-     *              2. mode==2 human vs computer
-     *              3. mode==3 computer vs computer
+     * @param mode The game mode
+     *             <ul>
+     *                 <li>1: human vs human</li>
+     *                 <li>2: human vs computer</li>
+     *                 <li>3: computer vs computer</li>
+     *             </ul>
      * @throws GameException if the game mode is invalid
      */
     public Connect4(int mode) throws GameException {
@@ -131,14 +142,6 @@ public class Connect4 {
                     break;
                 }
             }
-            // for(int row=; row<5; row++){
-            //     if(board[row][col] =='\u0000') {
-            //         board[row][col] = curColor;
-            //         lastDrop[0]=row;
-            //         lastDrop[1]=col;
-            //         break;
-            //     }
-            // }
         }
     }
 
@@ -152,7 +155,8 @@ public class Connect4 {
 
     /**
      * Checks if current player has won the game
-     * @return true if current player has won, vise versa.
+     *
+     * @return {@code true} if current player has won, {@code false} otherwise.
      */
     private boolean isWon() {
         char curColor=currentPlayer.getColor();
@@ -222,7 +226,7 @@ public class Connect4 {
     /**
      * Checks if the game is a draw.
      *
-     * @return true if the game is a draw, vise versa.
+     * @return {@code true} if the game is a draw, {@code false} otherwise.
      */
     private boolean isDraw() {
         // check if there is a winner
@@ -249,7 +253,7 @@ public class Connect4 {
      * Checks if the specific column is full
      *
      * @param column The column to check
-     * @return true if the column is full, vise versa.
+     * @return {@code true} if the column is full, {@code false} otherwise.
      * @throws GameException if the colum is out of bound
      */
     private boolean isFullCol(int column) throws GameException {
@@ -267,7 +271,7 @@ public class Connect4 {
     /**
      * Returns current game state and status code information.
      *
-     * @return A response object containing current game state and code
+     * @return A {@code Response} object containing current game state and code
      */
     public Response<GameState> startGame(){
         if(mode!=-1){
@@ -284,7 +288,7 @@ public class Connect4 {
      *
      * @param player The player whose name should be changed
      * @param name The new name for this player
-     * @return A response object containing status code and message
+     * @return A {@code Response} object containing status code and message
      */
     public Response<String> setPlayerName(Player player, String name){
         player.setPlayerName(name);
@@ -295,7 +299,7 @@ public class Connect4 {
      * Drops a checker piece in the specific column and returns the updated game state.
      *
      * @param column The column where the piece should be dropped
-     * @return A response object containing updated board and player information
+     * @return A {@code Response} object containing updated board and player information
      * @throws GameException if the move is invalid
      */
     public Response<GameState> dropChecker(int column) throws GameException {
@@ -325,7 +329,7 @@ public class Connect4 {
     /**
      * Returns information about current game state, including if there is a winner
      *
-     * @return A response object containing status code and current winner(if the game has a winner)
+     * @return A {@code Response} object containing status code and current winner(if the game has a winner)
      */
     public Response<Player> getWinningInfo() {
         if(isFinished){
@@ -345,7 +349,7 @@ public class Connect4 {
     /**
      * Gets game board and current player
      *
-     * @return A response object containing status code and game status
+     * @return A {@code Response} object containing status code and game status
      */
     public Response<GameState> getGameState(){
         return Response.success(Code.GET_GAME_STATUS_SUC, new GameState(board, currentPlayer));
@@ -354,7 +358,7 @@ public class Connect4 {
     /**
      * Resets current game to its initial state
      *
-     * @return A response object indicating success or failure
+     * @return A {@code Response} object indicating success or failure
      */
     public Response<Boolean> resetGame() {
         try{
