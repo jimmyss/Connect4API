@@ -12,13 +12,27 @@ import exceptions.GameException;
  * Connect4 class represents the logic for the Connect4 game. It manages the game state, players,
  * and interactions such as placing pieces, checking if the game is won or drawn, and switching
  * between players.
+ *
+ * <p>This class handles different modes of play including human vs human, human vs computer, and
+ * computer vs computer. It also manages the game board, handles player actions, and determines the
+ * game outcome.</p>
+ *
+ * @author Shimao Du, Bohan Liu
+ * @version 1.0
+ * @since 2024-09-23
  */
 public class Connect4 {
     // Constants for the board size
     private static final int ROWS=6;
     private static final int COLS=7;
     // Constants for the game piece colors
+    /**
+     * '@' is represented as RED
+     */
     public static final char RED='@';
+    /**
+     * '#' is represented as BLUE
+     */
     public static final char BLUE='#';
 
     // Game related attributes
@@ -35,9 +49,12 @@ public class Connect4 {
     /**
      * Initializes a new Connect4 game with the given mode.
      *
-     * @param mode  1. mode==1 human vs human
-     *              2. mode==2 human vs computer
-     *              3. mode==3 computer vs computer
+     * @param mode The game mode
+     *             <ul>
+     *                 <li>1: human vs human</li>
+     *                 <li>2: human vs computer</li>
+     *                 <li>3: computer vs computer</li>
+     *             </ul>
      * @throws GameException if the game mode is invalid
      */
     public Connect4(int mode) throws GameException {
@@ -116,8 +133,9 @@ public class Connect4 {
 
     /**
      * Updates the game board after a piece is dropped in specific column
-     * @param col The column
-     * @throws GameException
+     *
+     * @param col The column where the piece is dropped
+     * @throws GameException if the column is invalid or full
      */
     private void updateBoard(int col) throws GameException {
         if(!isFullCol(col)){ // if the column is not full
@@ -130,22 +148,22 @@ public class Connect4 {
                     break;
                 }
             }
-            // for(int row=; row<5; row++){
-            //     if(board[row][col] =='\u0000') {
-            //         board[row][col] = curColor;
-            //         lastDrop[0]=row;
-            //         lastDrop[1]=col;
-            //         break;
-            //     }
-            // }
         }
     }
 
+    /**
+     * Switches the current player to the other player.
+     */
     private void updateCurPlayer(){
         if(currentPlayer==player1) currentPlayer=player2;
         else currentPlayer=player1;
     }
 
+    /**
+     * Checks if current player has won the game
+     *
+     * @return {@code true} if current player has won, {@code false} otherwise.
+     */
     private boolean isWon() {
         char curColor=currentPlayer.getColor();
         int curRow=lastDrop[0];
@@ -211,6 +229,11 @@ public class Connect4 {
         return false;
     }
 
+    /**
+     * Checks if the game is a draw.
+     *
+     * @return {@code true} if the game is a draw, {@code false} otherwise.
+     */
     private boolean isDraw() {
         // check if there is a winner
         if(isWon()) return false;
@@ -225,10 +248,20 @@ public class Connect4 {
         return false;
     }
 
+    /**
+     * Determines if the game has been won or drawn and set isFinished flag.
+     */
     private void judgeGame(){
         if(isWon() || isDraw()) isFinished=true;
     }
 
+    /**
+     * Checks if the specific column is full
+     *
+     * @param column The column to check
+     * @return {@code true} if the column is full, {@code false} otherwise.
+     * @throws GameException if the colum is out of bound
+     */
     private boolean isFullCol(int column) throws GameException {
         if(column<0 || column>6) throw new GameException("Invalid move");
         if(this.board[0][column]=='\0'){
@@ -242,8 +275,9 @@ public class Connect4 {
     /************************/
 
     /**
-     * Return information of current player, color, and board info
+     * Returns current game state and status code information.
      *
+     * @return A {@code Response} object containing current game state and code
      */
     public Response<GameState> startGame(){
         if(mode!=-1){
@@ -256,11 +290,11 @@ public class Connect4 {
     }
 
     /**
-     * Allow changing of human player's name
+     * Sets a player's name
      *
-     * @param player
-     * @param name
-     * @return
+     * @param player The player whose name should be changed
+     * @param name The new name for this player
+     * @return A {@code Response} object containing status code and message
      */
     public Response<String> setPlayerName(Player player, String name){
         player.setPlayerName(name);
@@ -268,9 +302,11 @@ public class Connect4 {
     }
 
     /**
-     * This method is used to drop one piece to specific column and give response
+     * Drops a checker piece in the specific column and returns the updated game state.
      *
-     * @param column
+     * @param column The column where the piece should be dropped
+     * @return A {@code Response} object containing updated board and player information
+     * @throws GameException if the move is invalid
      */
     public Response<GameState> dropChecker(int column) throws GameException {
         // judge if the column is valid
@@ -297,9 +333,9 @@ public class Connect4 {
     }
 
     /**
-     * This method returns current winning information
+     * Returns information about current game state, including if there is a winner
      *
-     * @return
+     * @return A {@code Response} object containing status code and current winner(if the game has a winner)
      */
     public Response<Player> getWinningInfo() {
         if(isFinished){
@@ -316,13 +352,19 @@ public class Connect4 {
         }
     }
 
+    /**
+     * Gets game board and current player
+     *
+     * @return A {@code Response} object containing status code and game status
+     */
     public Response<GameState> getGameState(){
         return Response.success(Code.GET_GAME_STATUS_SUC, new GameState(board, currentPlayer));
     }
 
     /**
-     * Reset the game to original status.
+     * Resets current game to its initial state
      *
+     * @return A {@code Response} object indicating success or failure
      */
     public Response<Boolean> resetGame() {
         try{
