@@ -1,4 +1,4 @@
-package utils;
+package game;
 
 import game.Player;
 
@@ -15,11 +15,13 @@ import game.Player;
  * @version 1.0
  * @since 2024-09-23
  */
-public class GameState {
+public class GameContext {
     // The game board represented as a 2D character array
     private char[][] board;
     // The current player whose turn it is
     private Player currentPlayer;
+
+    private GameResult result;
 
     /**
      * Constructs a new GameState with the specified board and current player.
@@ -27,13 +29,14 @@ public class GameState {
      * @param board the current state of the game board
      * @param currentPlayer the player whose turn it is currently
      */
-    public GameState(char[][] board, Player currentPlayer) {
+    public GameContext(char[][] board, Player currentPlayer, GameResult result) {
         this.board=new char[board.length][];
         // deep copy board preventing tampering
         for(int i=0; i<board.length; i++){
             this.board[i]=board[i].clone();
         }
         this.currentPlayer=currentPlayer;
+        this.result=result;
     }
 
     /**
@@ -52,5 +55,17 @@ public class GameState {
      */
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public void setBoard(char[][] board) {
+        this.board = board;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public void setResult(GameResult result) {
+        this.result = result;
     }
 }
