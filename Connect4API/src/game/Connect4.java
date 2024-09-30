@@ -282,32 +282,44 @@ public class Connect4 {
     /************************/
 
     /**
-     * Starts the game and returns the current game context, which includes the game board, current player, and game result.
+     * Starts the game and returns the current game context, which includes the game board,
+     * current player, and game result.
      *
-     * This method is used to begin the game after it has been properly initialized. It checks whether the game has been set up correctly.
-     * If the game has not been initialized (i.e., `mode == -1`), it throws a {@code GameException}. If the game is initialized,
-     * it returns the current {@code GameContext}, which provides the state of the game, including the board, the current player, 
-     * and the game result.
+     * This method is used to begin the game after it has been properly initialized. It checks
+     * whether the game setup is correct, and throws a {@code GameException} if not.
+     *
+     * If the game is initialized, it returns the current {@code GameContext}, which provides
+     * the state of the game, including the board, the current player, and the game result.
      *
      * @return A {@code GameContext} object that contains:
-     *         - The current game board (`char[][] board`), representing the 6x7 Connect4 grid.
-     *         - The current player (`Player currentPlayer`), indicating whose turn it is.
-     *         - The current game result (`GameResult result`), providing details on the game's progress (win, draw, or ongoing).
+     * <ul>
+     *     <li>The current game board (`char[][] board`), representing the 6x7 Connect4 grid.</li>
+     *     <li>The current player (`Player currentPlayer`), indicating whose turn it is.</li>
+     *     <li>The current game result (`GameResult result`), detailing the game's progress (win, draw, or ongoing).</li>
+     * </ul>
      *
      * @throws GameException if the game has not been initialized (i.e., when `mode == -1`).
      *
-     * ### Game State Modifications:
-     * - **No modifications**: This method does not modify any game state. It simply returns the current game context or throws an exception if the game is not properly initialized.
+     * <p><b>Game State Modifications:</b></p>
+     * <ul>
+     *     <li><b>No modifications:</b> This method does not modify any game state. It simply returns the current game context
+     *     or throws an exception if the game is not properly initialized.</li>
+     * </ul>
      *
-     * ### Detailed Behavior:
-     * 1. **Game Initialization Check**:
-     *    - The method checks the `mode` variable to determine if the game has been initialized. If `mode == -1`, it throws a {@code GameException} with the message "The game is not initialized".
-     *
-     * 2. **Returning Game Context**:
-     *    - If the game is properly initialized (`mode != -1`), the method returns the current {@code GameContext}, which includes:
-     *      - The current state of the game board (`board`), showing the positions of all pieces on the 6x7 grid.
-     *      - The player whose turn it is (`currentPlayer`).
-     *      - The current game result (`result`), which may indicate an ongoing game, a win, or a draw.
+     * <p><b>Detailed Behavior:</b></p>
+     * <ol>
+     *     <li><b>Game Initialization Check:</b>
+     *         The method checks the `mode` variable to determine if the game has been initialized.
+     *         If `mode == -1`, it throws a {@code GameException} with the message "The game is not initialized".</li>
+     *     <li><b>Returning Game Context:</b>
+     *         If the game is properly initialized (`mode != -1`), the method returns the current {@code GameContext}, which includes:
+     *         <ul>
+     *             <li>The current state of the game board (`board`), showing the positions of all pieces on the 6x7 grid.</li>
+     *             <li>The player whose turn it is (`currentPlayer`).</li>
+     *             <li>The current game result (`result`), indicating an ongoing game, a win, or a draw.</li>
+     *         </ul>
+     *     </li>
+     * </ol>
      */
     public GameContext startGame() throws GameException {
         if(mode==-1){
@@ -321,29 +333,42 @@ public class Connect4 {
     /**
      * Sets the name for the specified player and returns a confirmation message.
      *
-     * This method allows setting or updating the name of a specific {@code Player}. It validates that both the player 
-     * and the name are not null before setting the name. If the validation fails, it throws a {@code GameException}.
+     * This method allows setting or updating the name of a specific {@code Player}. It ensures that
+     * both the player and the name are not null before proceeding. If validation fails, it throws a
+     * {@code GameException}.
      *
      * @param player The {@code Player} object whose name is to be set. Must not be null.
      * @param name The new name to assign to the player. Must not be null.
-     * @return A {@code String} message indicating the new name that has been set in the format "new name: [name]".
+     * @return A {@code String} message indicating the new name that has been set in the format
+     *         "new name: [name]".
      *
      * @throws GameException if the provided player is null or the provided name is null.
      *
-     * ### Game State Modifications:
-     * - **Player Name**: The function updates the name of the specified {@code Player} by calling {@code player.setPlayerName(name)}.
+     * <p><b>Game State Modifications:</b></p>
+     * <ul>
+     *     <li><b>Player Name:</b> This method updates the name of the specified {@code Player}
+     *     by calling {@code player.setPlayerName(name)}.</li>
+     * </ul>
      *
-     * ### Detailed Behavior:
-     * 1. **Null Checks**:
-     *    - The function first checks if the provided `player` object is null. If it is, a {@code GameException} is thrown with the message "Player is null".
-     *    - It then checks if the provided `name` is null. If it is, a {@code GameException} is thrown with the message "name is null".
-     *
-     * 2. **Updating Player Name**:
-     *    - If both the player and name are valid, the function calls `player.setPlayerName(name)` to set the new name for the player.
-     *
-     * 3. **Returning Confirmation**:
-     *    - After successfully setting the player's name, the function returns a confirmation message in the format: `"new name: [name]"`, where `[name]` is the newly set name.
-     *
+     * <p><b>Detailed Behavior:</b></p>
+     * <ol>
+     *     <li><b>Null Checks:</b>
+     *         <ul>
+     *             <li>First, the method checks if the provided {@code player} object is null. If so, a
+     *                 {@code GameException} is thrown with the message "Player is null".</li>
+     *             <li>Next, it checks if the provided {@code name} is null. If so, a
+     *                 {@code GameException} is thrown with the message "Name is null".</li>
+     *         </ul>
+     *     </li>
+     *     <li><b>Updating Player Name:</b>
+     *         If both the player and name are valid, the method calls {@code player.setPlayerName(name)}
+     *         to set the new name for the player.
+     *     </li>
+     *     <li><b>Returning Confirmation:</b>
+     *         After successfully setting the player's name, the method returns a confirmation message in
+     *         the format: "new name: [name]", where {@code [name]} is the newly set name.
+     *     </li>
+     * </ol>
      */
     public String setPlayerName(Player player, String name) throws GameException {
         if(player==null)
@@ -357,9 +382,9 @@ public class Connect4 {
     /**
      * Drops a checker into the specified column and returns the updated game context.
      *
-     * This method handles the dropping of a checker piece into the game board for the current player. 
-     * It validates the column input, ensures that the column is not full, and checks if the game is already over. 
-     * If the move is valid, the method updates the board and game state accordingly, switches players if the game is ongoing, 
+     * This method handles the dropping of a checker piece into the game board for the current player.
+     * It validates the column input, ensures that the column is not full, and checks if the game is already over.
+     * If the move is valid, the method updates the board and game state accordingly, switches players if the game is ongoing,
      * and returns the updated {@code GameContext}.
      *
      * @param column The column (0-6) where the checker should be dropped.
@@ -367,33 +392,46 @@ public class Connect4 {
      *
      * @throws GameException if the column is invalid (not between 0 and 6), the column is already full, or the game has already finished.
      *
-     * ### Game State Modifications:
-     * - **Game Board**: The board is updated by placing the current player's checker in the specified column. If the current player is a computer, the column is chosen randomly.
-     * - **Current Player**: After a valid move, the current player may be switched if the game has not finished.
-     * - **Game Finished Flag**: The `isFinished` flag is updated if the game has been won or ends in a draw.
+     * <p><b>Game State Modifications:</b></p>
+     * <ul>
+     *   <li><b>Game Board:</b> The board is updated by placing the current player's checker in the specified column.
+     *   If the current player is a computer, the column is chosen randomly.</li>
+     *   <li><b>Current Player:</b> After a valid move, the current player may be switched if the game has not finished.</li>
+     *   <li><b>Game Finished Flag:</b> The {@code isFinished} flag is updated if the game has been won or ends in a draw.</li>
+     * </ul>
      *
-     * ### Detailed Behavior:
-     * 1. **Column Validation**:
-     *    - The method checks if the provided `column` is valid (between 0 and 6). If the column is out of bounds, a {@code GameException} with the message "Column is invalid" is thrown.
-     *    - It then checks if the column is full using `isFullCol(column)`. If the column is full, a {@code GameException} with the message "Column: [column] is full" is thrown.
-     *
-     * 2. **Game Finished Check**:
-     *    - If the game has already finished (`isFinished == true`), a {@code GameException} is thrown with the message "game has finished", indicating that no more moves can be made.
-     *
-     * 3. **Dropping the Checker**:
-     *    - If the current player is a human, the checker is dropped in the specified column by calling `updateBoard(column)`.
-     *    - If the current player is a computer, a random valid column is selected using `Random.nextInt(7)`, and the checker is dropped into that column.
-     *
-     * 4. **Game Status Update**:
-     *    - After dropping the checker, the method calls `judgeGame()` to evaluate whether the move has resulted in a win or draw.
-     *    - If the game is not finished (`isFinished == false`), the current player is switched using `switchCurPlayer()`.
-     *
-     * 5. **Returning Game Context**:
-     *    - The method returns the current {@code GameContext}, which includes:
-     *      - The updated game board (`board`).
-     *      - The current player (`currentPlayer`), who will make the next move if the game is not over.
-     *      - The game result (`result`), indicating whether the game is still ongoing, has been won, or has ended in a draw.
-     *
+     * <p><b>Detailed Behavior:</b></p>
+     * <ol>
+     *   <li><b>Column Validation:</b>
+     *       <ul>
+     *           <li>The method checks if the provided {@code column} is valid (between 0 and 6). If out of bounds, a {@code GameException}
+     *               with the message "Column is invalid" is thrown.</li>
+     *           <li>It checks if the column is full using {@code isFullCol(column)}. If full, a {@code GameException} with the message "Column: [column] is full" is thrown.</li>
+     *       </ul>
+     *   </li>
+     *   <li><b>Game Finished Check:</b>
+     *       <ul>
+     *           <li>If the game is already finished ({@code isFinished == true}), a {@code GameException} is thrown with the message "Game has finished".</li>
+     *       </ul>
+     *   </li>
+     *   <li><b>Dropping the Checker:</b>
+     *       <ul>
+     *           <li>If the current player is human, the checker is dropped in the specified column by calling {@code updateBoard(column)}.</li>
+     *           <li>If the current player is a computer, a random valid column is selected using {@code Random.nextInt(7)}, and the checker is dropped in that column.</li>
+     *       </ul>
+     *   </li>
+     *   <li><b>Game Status Update:</b>
+     *       <ul>
+     *           <li>After dropping the checker, the method calls {@code judgeGame()} to check if the move results in a win or draw.</li>
+     *           <li>If the game is not finished ({@code isFinished == false}), the current player is switched using {@code switchCurPlayer()}.</li>
+     *       </ul>
+     *   </li>
+     *   <li><b>Returning Game Context:</b>
+     *       <ul>
+     *           <li>The method returns the current {@code GameContext}, which includes the updated game board, the current player for the next turn, and the game result.</li>
+     *       </ul>
+     *   </li>
+     * </ol>
      */
     public GameContext dropChecker(int column) throws GameException {
         // judge if the column is valid
@@ -421,28 +459,42 @@ public class Connect4 {
     /**
      * Returns the player who won the game, or {@code null} if the game ended in a draw or is still ongoing.
      *
-     * This method checks the current game result from the {@code GameContext}. If the game has been won, 
-     * it returns the winning {@code Player}. If the game has ended in a draw or is still in progress, 
+     * This method checks the current game result from the {@code GameContext}. If the game has been won,
+     * it returns the winning {@code Player}. If the game has ended in a draw or is still in progress,
      * it returns {@code null}.
      *
      * @return The {@code Player} who won the game, or {@code null} if the game ended in a draw or is still in progress.
      *
-     * ### Game State Modifications:
-     * - **No modifications**: This method does not modify the state of the game; it only checks and returns the current game result.
+     * <p><b>Game State Modifications:</b></p>
+     * <ul>
+     *     <li><b>No modifications:</b> This method does not modify the state of the game; it only checks
+     *     and returns the current game result.</li>
+     * </ul>
      *
-     * ### Detailed Behavior:
-     * 1. **Game Result Check**:
-     *    - The method retrieves the current game result from the {@code GameContext} by calling `gameContext.getResult()`.
-     *    - If the result is {@code GameResult.CONTINUE}, indicating that the game is still ongoing, the method returns {@code null}.
-     *
-     * 2. **Winner Determination**:
-     *    - If the game result is {@code GameResult.WIN}, the method checks which player won:
-     *      - If the current player at the time of winning is `player1`, it returns `player1`.
-     *      - If the current player at the time of winning is `player2`, it returns `player2`.
-     *
-     * 3. **Draw Check**:
-     *    - If the game result is not {@code WIN} and the game has finished, the method returns {@code null}, indicating the game ended in a draw.
-     *
+     * <p><b>Detailed Behavior:</b></p>
+     * <ol>
+     *     <li><b>Game Result Check:</b>
+     *         <ul>
+     *             <li>The method retrieves the current game result from the {@code GameContext} by calling
+     *                 {@code gameContext.getResult()}.</li>
+     *             <li>If the result is {@code GameResult.CONTINUE}, indicating that the game is still ongoing,
+     *                 the method returns {@code null}.</li>
+     *         </ul>
+     *     </li>
+     *     <li><b>Winner Determination:</b>
+     *         <ul>
+     *             <li>If the game result is {@code GameResult.WIN}, the method checks which player won:</li>
+     *             <li>If the current player at the time of winning is {@code player1}, it returns {@code player1}.</li>
+     *             <li>If the current player at the time of winning is {@code player2}, it returns {@code player2}.</li>
+     *         </ul>
+     *     </li>
+     *     <li><b>Draw Check:</b>
+     *         <ul>
+     *             <li>If the game result is not {@code WIN} and the game has finished, the method returns {@code null},
+     *                 indicating the game ended in a draw.</li>
+     *         </ul>
+     *     </li>
+     * </ol>
      */
     public Player getWinner() {
         if(gameContext.getResult()!=GameResult.CONTINUE){
@@ -471,15 +523,17 @@ public class Connect4 {
     /**
      * Prints the current game board in a text-based format.
      *
-     * This method displays the 6x7 game board, where empty cells are represented by dots ('.') and 
+     * This method displays the 6x7 game board, where empty cells are represented by dots ('.') and
      * filled cells are shown using their respective characters. It also prints the column numbers (0-6) at the bottom.
      *
      * @param board A 2D character array representing the game board.
      *
-     * ### Output Format:
-     * - Empty cells are displayed as '.'.
-     * - Filled cells display their corresponding player markers.
-     * - Column numbers (0-6) are printed at the bottom for reference.
+     * <p><b>Output Format:</b></p>
+     * <ul>
+     *     <li>Empty cells are displayed as {@code '.'}.</li>
+     *     <li>Filled cells display their corresponding player markers.</li>
+     *     <li>Column numbers (0-6) are printed at the bottom for reference.</li>
+     * </ul>
      */
     public static void printTextBasedBoard(char[][] board) {
         System.out.println("Current board:");
