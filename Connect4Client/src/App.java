@@ -2,9 +2,10 @@ import java.util.Scanner;
 
 import game.Connect4;
 import game.Player;
-import utils.GameState;
-import utils.Response;
-import utils.Code;
+import game.GameContext;
+import game.GameResult;
+
+import exceptions.GameException;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -43,15 +44,13 @@ public class App {
         }
 
         Connect4 game = new Connect4(mode, player1, player2);
-        GameState gameState = game.getGameState().getData();
-        game.startGame();
-        printBoard(gameState.getBoard());
+        GameContext gameContext = game.startGame();
+        printBoard(gameContext.getBoard());
 
-        System.out.println(game.getWinningInfo().getStatusCode());
 
-        while (game.getWinningInfo().getStatusCode() == Code.CONT_GAME) {
+        while (gameContext.getResult() == GameResult.CONTINUE) {
 
-            Player currentPlayer = gameState.getCurrentPlayer();
+            Player currentPlayer = gameContext.getCurrentPlayer();
             int column = 0;
 
             if (currentPlayer.isComputer()) {
@@ -68,31 +67,22 @@ public class App {
                 column = scanner.nextInt();
             }
 
-            Response<GameState> response = game.dropChecker(column);
-
-            if (response.getStatusCode() != 200) {
-                if (response.getStatusCode() == Code.FULL_COL_ERR) {
-                    System.out.println("Column " + column + " is full. Please choose another column.");
-                    continue;
-                }
-                if (response.getStatusCode() == Code.INVALID_MOVE_ERR) {
-                    System.out.println("Invalid move. Please choose a column between 0 and 6.");
-                    continue;
-                }
+            try {
+                gameContext = game.dropChecker(column);
+            } catch (GameException e) {
+                System.out.println(e.getMessage());
+                continue;
             }
 
-            gameState = response.getData();
-            printBoard(gameState.getBoard());
+            printBoard(gameContext.getBoard());
         }
 
-        Response<Player> gameStatus = game.getWinningInfo();
+        Player winner = game.getWinner();
         System.out.println("Game over!");
-        if (gameStatus.getStatusCode() == Code.DRAW_GAME) {
+        if (gameContext.getResult() == GameResult.DRAW) {
             System.out.println("It's a draw!");
-        } else if (gameStatus.getStatusCode() == Code.P1_WIN) {
-            System.out.println(player1.getPlayerName() + " wins!");
-        } else if (gameStatus.getStatusCode() == Code.P2_WIN) {
-            System.out.println(player2.getPlayerName() + " wins!");
+        } else if (gameContext.getResult() == GameResult.WIN) {
+            System.out.println(winner.getPlayerName() + " wins!");
         }
 
         scanner.close();
